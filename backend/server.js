@@ -7,16 +7,16 @@ const PORT = process.env.PORT || 3004;
 const app = express();
 dotenv.config();
 
-app.get("/", (req: any, res: any): any => {
+app.get("/", (req, res) => {
   res.send("Hello backend");
 });
 
-app.get("/api/chat", (req: any, res: any): any => {
+app.get("/api/chat", (req, res) => {
   res.send(chats);
 });
 
-app.get("/api/chats/:id", (req: any, res: any): any => {
-  const singleChat = chats.find((user: any): any => user._id === req.params.id);
+app.get("/api/chat/:id", (req, res) => {
+  const singleChat = chats.find((user) => user._id === req.params.id);
   res.send(singleChat);
 });
 

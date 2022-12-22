@@ -2,9 +2,9 @@
   "name": "talk-ative",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/server.ts",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "nodemon backend/server.ts",
+    "start": "nodemon backend/server.js",
     "watch": "node-sass --watch src/resources/scss/ --output src/public/css/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,7 @@
     "express-handlebars": "^6.0.6",
     "framer-motion": "^8.0.1",
     "method-override": "^3.0.0",
-    "mongoose": "^6.8.0",
+    "mongoose": "^6.8.1",
     "mongoose-delete": "^0.5.4",
     "mongoose-slug-generator": "^1.0.4"
   },
