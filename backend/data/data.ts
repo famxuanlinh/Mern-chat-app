@@ -1,3 +1,15 @@
+interface chats{
+  isGroupChat: boolean 
+  _id: string 
+  chatName: string 
+  users: User[] 
+}
+
+interface User{
+  name: string
+  email: string
+}
+
 export const chats= [
   {
     isGroupChat: false,

@@ -8,10 +8,10 @@ const app = express();
 dotenv.config();
 
 app.get("/", (req: any, res: any): any => {
-  res.send("Hello ae");
+  res.send("Hello backend");
 });
 
-app.get("/api/chats", (req: any, res: any): any => {
+app.get("/api/chat", (req: any, res: any): any => {
   res.send(chats);
 });
 
