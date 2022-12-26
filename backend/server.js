@@ -1,22 +1,50 @@
 const express = require("express");
 const { chats } = require("./data/data");
 const dotenv = require("dotenv");
+const db = require("./config/db");
 
 const PORT = process.env.PORT || 3004;
 
 const app = express();
 dotenv.config();
 
-app.get("/", (req: any, res: any): any => {
-  res.send("Hello ae");
+db.connect();
+
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
+  // Request methods you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  // Request headers you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  // Pass to next layer of middleware
+  next();
 });
 
-app.get("/api/chats", (req: any, res: any): any => {
+app.get("/", (req, res) => {
+  res.send("Hello backend");
+});
+
+app.get("/api/chat", (req, res) => {
   res.send(chats);
 });
 
-app.get("/api/chats/:id", (req: any, res: any): any => {
-  const singleChat = chats.find((user: any): any => user._id === req.params.id);
+app.get("/api/chat/:id", (req, res) => {
+  const singleChat = chats.find((user) => user._id === req.params.id);
   res.send(singleChat);
 });
 
