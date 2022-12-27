@@ -1,95 +1,52 @@
 const express = require("express");
 const { chats } = require("./data/data");
 const dotenv = require("dotenv");
+const db = require("./config/db");
+// const route = require("./routes");
+const userRouters = require("./routes/userRouters");
+const { notFound, errorHandler } = require("./middlewares/errorMidleware");
 
 const PORT = process.env.PORT || 3004;
 
-const app = express();
 dotenv.config();
+db.connect();
+const app = express();
+
+app.use(express.json()); //To accept JSON data
+
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
+  // Request methods you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  // Request headers you wish to allow
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  // Pass to next layer of middleware
+  next();
+});
 
 app.get("/", (req, res) => {
-  res.send("Hello backend");
+  res.send("API running!!!");
 });
 
-app.get("/api/chat", (req, res) => {
-  res.send(chats);
-});
+// route(app);
+app.use("/api/user", userRouters);
 
-app.get("/api/chat/:id", (req, res) => {
-  const singleChat = chats.find((user) => user._id === req.params.id);
-  res.send(singleChat);
-});
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, console.log(`Server starting port ${PORT}...`));
-
-// const path = require("path");
-// const express = require("express");
-// //Sử dụng phương thức PUT trong form behaivior
-// var methodOverride = require("method-override");
-// const morgan = require("morgan");
-// const handlebars = require("express-handlebars");
-// const SortMiddlewares = require("./app/middlewares/SortMiddlewares");
-
-// const route = require("./routes");
-// const db = require("./app/config/db");
-
-// // Connect to DB
-// db.connect();
-
-// const app = express();
-// const port = 3001;
-
-// app.use(express.static(path.join(__dirname, "public")));
-
-// //middleware để xử lý dữ liệu từ form-data
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-
-// //Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn’t support it.
-// app.use(methodOverride("_method"));
-
-// //Custom SortMiddlewares
-// app.use(SortMiddlewares);
-
-// //http logger
-// app.use(morgan("combined"));
-
-// //Template engine
-// app.engine(
-//   "hbs",
-//   handlebars.engine({
-//     extname: "hbs",
-//     helpers: {
-//       sum: (a, b) => a + b,
-//       sortable: (field, sort) => {
-//         const sortType = field === sort.column ? sort.type : "default";
-
-//         const types = {
-//           default: "desc",
-//           asc: "desc",
-//           desc: "asc",
-//         };
-
-//         const icons = {
-//           default: "fa-solid fa-sort",
-//           asc: "fa-solid fa-arrow-up-wide-short",
-//           desc: "fa-solid fa-arrow-down-wide-short",
-//         };
-
-//         const icon = icons[sortType];
-//         const type = types[sortType];
-
-//         return `<a href="?_sort&column=${field}&type=${type}"><i class="${icon}"></i></a>`;
-//       },
-//     },
-//   })
-// );
-// app.set("view engine", "hbs");
-// app.set("views", "./src/resources/views");
-
-// //Route
-// route(app);
-
-// app.listen(port, () => {
-//   console.log(`App listening on port ${port}`);
-// });
