@@ -4,6 +4,7 @@ const generateToken = require("../config/generateToken");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, pic } = req.body;
+  // console.log('Hello')
 
   if (!name || !email || !password) {
     res.status(400);
@@ -42,6 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  // console.log('login')
 
   if (user && (await user.matchPassword(password))) {
     res.json({

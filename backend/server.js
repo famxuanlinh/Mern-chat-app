@@ -39,12 +39,14 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.send("API running!!!");
-});
+
 
 // route(app);
 app.use("/api/user", userRouters);
+
+app.get("/", (req, res) => {
+  res.send("API running!!!");
+});
 
 app.use(notFound);
 app.use(errorHandler);
