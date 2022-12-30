@@ -3,19 +3,20 @@ import "./App.css";
 
 import Homepage from "./Pages/Homepage";
 import Chatspage from "./Pages/Chatpage";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import NotFoundPage from "./Pages/NotFoundPage";
 
 function App() {
   return (
-    <div className="App">
-     <Router>
+    <Router>
+      <div className="App">
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/chat" element={<Chatspage />} />
-          {/* <Route path="/chat" component={}/> */}
+          <Route path="/*" element={<NotFoundPage />} />
         </Routes>
-     </Router>
-    </div>
+      </div>
+    </Router>
   );
 }
 
