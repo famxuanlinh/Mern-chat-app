@@ -1,12 +1,16 @@
 var express = require("express");
-const { registerUser, authUser } = require("../controllers/userController");
+const {
+  registerUser,
+  authUser,
+  allUsers,
+} = require("../controllers/userController");
+const { protect } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-// const userController = require('../controllers/userController');
 
 router.post("/login", authUser);
-router.route("/").post(registerUser);
+router.route("/").post(registerUser).get(protect, allUsers);
 
 // app.get("/api/chat", (req, res) => {
 //     res.send(chats);

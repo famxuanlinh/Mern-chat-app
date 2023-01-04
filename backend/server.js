@@ -2,8 +2,8 @@ const express = require("express");
 const { chats } = require("./data/data");
 const dotenv = require("dotenv");
 const db = require("./config/db");
-// const route = require("./routes");
 const userRouters = require("./routes/userRouters");
+const chatRouters = require("./routes/chatRouters");
 const { notFound, errorHandler } = require("./middlewares/errorMidleware");
 
 const PORT = process.env.PORT || 3004;
@@ -42,13 +42,14 @@ app.use(function (req, res, next) {
 
 
 // route(app);
+app.use("/api/chat", chatRouters);
 app.use("/api/user", userRouters);
 
 app.get("/", (req, res) => {
   res.send("API running!!!");
 });
 
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
 app.listen(PORT, console.log(`Server starting port ${PORT}...`));
