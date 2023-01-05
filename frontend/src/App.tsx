@@ -1,18 +1,20 @@
+import React from "react";
 import "./App.css";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
+// import { Route, Routes } from "react-router-dom";
 
 import Homepage from "./Pages/Homepage";
 import Chatspage from "./Pages/Chatpage";
-import { Route, Routes } from "react-router-dom";
-import NotFoundPage from "./Pages/NotFoundPage";
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/chat" element={<Chatspage />} />
-        <Route path="/*" element={<NotFoundPage />} />
-      </Routes>
+      {/* <Router> */}
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/chat" element={<Chatspage />} />
+        </Routes>
+      {/* </Router> */}
     </div>
   );
 }
