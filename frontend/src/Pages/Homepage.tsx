@@ -1,10 +1,7 @@
+import React, { useEffect } from "react";
 import {
   Box,
-  Button,
-  ButtonGroup,
   Container,
-  Flex,
-  Spacer,
   Tab,
   TabList,
   TabPanel,
@@ -12,11 +9,20 @@ import {
   Tabs,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
 import FormLogin from "../components/formLogin";
 import FormSignup from "../components/formSignup";
+import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "");
+    if (userInfo) {
+      navigate("/chat");
+    }
+  }, [navigate]);
+
   return (
     <div>
       <VStack>

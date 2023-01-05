@@ -1,40 +1,37 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Card, CardHeader, CardBody, CardFooter, Text, Button } from "@chakra-ui/react";
+// interface Chat {
+//   isGroupChat: boolean;
+//   _id: string;
+//   chatName: string;
+//   users: User[];
+// }
 
-interface Chat {
-  isGroupChat: boolean;
-  _id: string;
-  chatName: string;
-  users: User[];
-}
+import { Box, Container } from "@chakra-ui/react";
+import { useChatContext } from "../Context/ChatProvider";
+import SideDrawer from "../components/miscellaneous/SideDrawer";
+import MyChats from "../components/MyChats";
+import ChatBox from "../components/ChastBox";
+import Header from "../components/Header";
+import SideBar from "../components/sideBar";
 
-interface User {
-  name: string;
-  email: string;
-}
+// interface UserInfo {
+//   name: string;
+//   email: string;
+// }
 
 const Chatspage = () => {
-  const [chats, setChats] = useState<Chat[]>([]);
-
-  const fetchChats = async () => {
-    const { data } = await axios.get("/api/chat");
-    setChats(data);
-  };
-
-  useEffect(() => {
-    fetchChats();
-  }, []);
-
-  console.log(chats);
+  const { user } = useChatContext();
+  console.log("Chatspage ~ user", user)
 
   return (
-    <div>
-      {chats.map((chat): any => (
-        <div key={chat._id}>{chat.chatName}</div>
-      ))}
-      <Button colorScheme='blue'>Button</Button>
-    </div>
+    <Box>
+      {user && <Header />}
+      <SideBar />
+      {/* <SideDrawer /> */}
+      <Box ms="344px" >
+        <MyChats />
+        {/* <ChatBox /> */}
+      </Box>
+    </Box>
   );
 };
 

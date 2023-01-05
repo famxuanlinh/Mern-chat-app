@@ -1,5 +1,16 @@
+// interface chats{
+//   isGroupChat: boolean
+//   _id: string
+//   chatName: string
+//   users: User[]
+// }
 
-  const chats = [
+// interface User{
+//   name: string
+//   email: string
+// }
+
+const chats = [
   {
     isGroupChat: false,
     users: [
@@ -107,8 +118,5 @@
     },
   },
 ];
-
-
-
 
 module.exports = { chats };

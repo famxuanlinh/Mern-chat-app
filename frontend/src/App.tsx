@@ -9,12 +9,12 @@ import Chatspage from "./Pages/Chatpage";
 function App() {
   return (
     <div className="App">
-      <Router>
+      {/* <Router> */}
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/chat" element={<Chatspage />} />
         </Routes>
-      </Router>
+      {/* </Router> */}
     </div>
   );
 }
