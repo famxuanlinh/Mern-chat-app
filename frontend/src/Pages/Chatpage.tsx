@@ -1,7 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { Button } from "@chakra-ui/react";
-
 // interface Chat {
 //   isGroupChat: boolean;
 //   _id: string;
@@ -9,27 +5,33 @@
 //   users: User[];
 // }
 
-// interface User {
+import { Box, Container } from "@chakra-ui/react";
+import { useChatContext } from "../Context/ChatProvider";
+import SideDrawer from "../components/miscellaneous/SideDrawer";
+import MyChats from "../components/MyChats";
+import ChatBox from "../components/ChastBox";
+import Header from "../components/Header";
+import SideBar from "../components/sideBar";
+
+// interface UserInfo {
 //   name: string;
 //   email: string;
 // }
 
 const Chatspage = () => {
-  // const [chats, setChats] = useState<Chat[]>([]);
-
-  // const fetchChats = async () => {
-  //   const { data } = await axios.get("/api/chat");
-  //   setChats(data);
-  // };
-
-  // useEffect(() => {
-  //   fetchChats();
-  // }, []);
+  const { user } = useChatContext();
+  console.log("Chatspage ~ user", user)
 
   return (
-    <div>
-      THis is chatpage
-    </div>
+    <Box>
+      {user && <Header />}
+      <SideBar />
+      {/* <SideDrawer /> */}
+      <Box ms="344px" >
+        <MyChats />
+        {/* <ChatBox /> */}
+      </Box>
+    </Box>
   );
 };
 
