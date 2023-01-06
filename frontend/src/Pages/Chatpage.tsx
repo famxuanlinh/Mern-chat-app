@@ -5,12 +5,12 @@
 //   users: User[];
 // }
 
-import { Box, Container } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useChatContext } from "../Context/ChatProvider";
-import SideDrawer from "../components/miscellaneous/SideDrawer";
+// import SideDrawer from "../components/miscellaneous/SideDrawer";
 import MyChats from "../components/MyChats";
-import ChatBox from "../components/ChastBox";
-import Header from "../components/Header";
+// import ChatBox from "../components/ChastBox";
+// import Header from "../components/Header";
 import SideBar from "../components/sideBar";
 
 // interface UserInfo {
@@ -24,7 +24,7 @@ const Chatspage = () => {
 
   return (
     <Box>
-      {user && <Header />}
+      {/* {user && <Header />} */}
       <SideBar />
       {/* <SideDrawer /> */}
       <Box ms="344px" >

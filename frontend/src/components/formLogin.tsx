@@ -45,7 +45,7 @@ const FormLogin = () => {
       };
 
       const { data } = await axios.post("/api/user/login", config);
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       toast({
         title: "Registration Successful",
         status: "success",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   AvatarBadge,
@@ -19,6 +19,7 @@ import {
   Square,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,14 +27,74 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import MainUser from "./mainUser";
+import { useChatContext } from "../Context/ChatProvider";
+import axios from "axios";
+
+interface SearchResult {
+  _id: string;
+  name: string;
+  email: string;
+  pic: string;
+}
 
 const SideBar = () => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [value, setValue] = React.useState("");
-  const handleChange = (event: any) => setValue(event.target.value);
+  const [isSearch, setIsSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchresult, setSearchresult] = useState<SearchResult[]>([]);
+  const { user } = useChatContext();
+  console.log("searchresult", searchresult);
+
+  const handleChange = (e: any): any => {
+    setSearchValue(e.target.value);
+    // console.log("searchValue", searchValue);
+  };
 
   const faPropIcon = faUserGroup as IconProp;
   const faSearchIcon = faMagnifyingGlass as IconProp;
+
+  const handleOpenSearchSuggest = () => setIsSearch(true);
+  const handleCloseSearchSuggest = () => setIsSearch(false);
+
+  useEffect(() => {
+    const getSearchresult = async () => {
+      if (!user && !searchValue) return;
+
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        };
+
+        const { data } = await axios.get(
+          `/api/user?search=${searchValue}`,
+          config
+        );
+
+        setSearchresult(data);
+        console.log("searchresult", searchresult);
+      } catch (error: any) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Search Results",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
+      }
+    };
+
+    if (!searchValue.trim()) {
+      setSearchresult([]);
+      return;
+    }
+    getSearchresult();
+  }, [searchValue]);// eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Box
       w="344px"
@@ -41,20 +102,35 @@ const SideBar = () => {
       borderRight="1px"
       pos="fixed"
       borderColor="gray.200"
-      // ps="16px"
       pt="16px"
     >
       <Flex borderBottom="1px" borderColor="gray.200" pb={4} ps="16px">
-        <InputGroup>
+        {/* Header */}
+        <InputGroup onClick={handleOpenSearchSuggest}>
           <InputLeftElement
             pointerEvents="none"
             children={<FontAwesomeIcon icon={faSearchIcon} />}
           />
-          <Input type="tel" placeholder="Search" />
+          <Input
+            type="tel"
+            placeholder="Search"
+            value={searchValue}
+            onChange={(e) => handleChange(e)}
+          />
         </InputGroup>
-        <Center p={2} onClick={onOpen}>
-          <FontAwesomeIcon icon={faPropIcon} />
+        <Center p={2}>
+          {isSearch ? (
+            <button onClick={handleCloseSearchSuggest}>Close</button>
+          ) : (
+            <FontAwesomeIcon
+              icon={faPropIcon}
+              onClick={onOpen}
+              style={{ padding: "0 10px" }}
+            />
+          )}
         </Center>
+
+        {/* Modal create group */}
         <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -69,7 +145,7 @@ const SideBar = () => {
               />
               <Text mb="8px">Add friend to group</Text>
               <Input
-                value={value}
+                value={searchValue}
                 onChange={handleChange}
                 placeholder="Enter name or number phone ..."
                 size="sm"
@@ -87,7 +163,6 @@ const SideBar = () => {
                       <AvatarBadge boxSize="1.25em" bg="green.500" />
                     </Avatar>
                   </Square>
-                  {/* <Spacer /> */}
                   <Box color="black" ps={5}>
                     <Text fontWeight={600}>Hello hesolili</Text>
                     <p>Email: helle@example.com</p>
@@ -104,57 +179,89 @@ const SideBar = () => {
                       <AvatarBadge boxSize="1.25em" bg="green.500" />
                     </Avatar>
                   </Square>
-                  {/* <Spacer /> */}
                   <Box color="black" ps={5}>
                     <Text fontWeight={600}>Hello hesolili</Text>
                     <p>Email: helle@example.com</p>
                   </Box>
                 </Flex>
               </Box>
-              {/* <Lorem count={2} /> */}
             </ModalBody>
 
             <ModalFooter>
-              <Button variant="ghost"  mr={3} onClick={onClose}>
+              <Button variant="ghost" mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button colorScheme="blue" >Create group</Button>
+              <Button colorScheme="blue">Create group</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       </Flex>
 
-      <div>
-        <Box w="100%" p={2} color="white" ps="16px">
-          <Flex>
-            <Square>
-              <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
-                <AvatarBadge boxSize="1.25em" bg="green.500" />
-              </Avatar>
-            </Square>
-            {/* <Spacer /> */}
-            <Box color="black" ps={5}>
-              <Text fontWeight={600}>Hello hesolili</Text>
-              <p>Email: helle@example.com</p>
-            </Box>
-          </Flex>
-        </Box>
-        <Box bg="#edf2f6" w="100%" p={2} color="white" ps="16px">
-          <Flex>
-            <Square>
-              <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
-                <AvatarBadge boxSize="1.25em" bg="green.500" />
-              </Avatar>
-            </Square>
-            {/* <Spacer /> */}
-            <Box color="black" ps={5}>
-              <h2>Hello hesolili</h2>
-              <p>Email: helle@example.com</p>
-            </Box>
-          </Flex>
-        </Box>
-      </div>
+      
 
+      {/* Body */}
+      {isSearch ? (
+        <>
+          {searchresult.length !== 0 ? (
+            <>
+              {searchresult.map((item: any) => (
+                <Box
+                  key={item._id}
+                  w="100%"
+                  p={2}
+                  color="white"
+                  ps="16px"
+                  display="flex"
+                >
+                  <Avatar name="Dan Abrahmov" src={item.pic}>
+                    <AvatarBadge boxSize="1.25em" bg="green.500" />
+                  </Avatar>
+                  <Center>
+                    <Text color="black" ps={5} fontWeight={600}>
+                      {item.name}
+                    </Text>
+                  </Center>
+                </Box>
+              ))}
+            </>
+          ) : (
+            <Center pt={90} fontSize={20}>
+              Not result
+            </Center>
+          )}
+        </>
+      ) : (
+        <>
+          <Box w="100%" p={2} color="white" ps="16px">
+            <Flex>
+              <Square>
+                <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
+                  <AvatarBadge boxSize="1.25em" bg="green.500" />
+                </Avatar>
+              </Square>
+              <Box color="black" ps={5}>
+                <Text fontWeight={600}>Hello hesolili</Text>
+                <p>Email: helle@example.com</p>
+              </Box>
+            </Flex>
+          </Box>
+          <Box bg="#edf2f6" w="100%" p={2} color="white" ps="16px">
+            <Flex>
+              <Square>
+                <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
+                  <AvatarBadge boxSize="1.25em" bg="green.500" />
+                </Avatar>
+              </Square>
+              <Box color="black" ps={5}>
+                <h2>Hello hesolili</h2>
+                <p>Email: helle@example.com</p>
+              </Box>
+            </Flex>
+          </Box>
+        </>
+      )}
+
+      {/* Footer */}
       <Box
         bg="#edf2f6"
         pos="fixed"
@@ -164,16 +271,7 @@ const SideBar = () => {
         borderColor="gray.200"
       >
         <Flex p={2} ps="16px">
-          <Square>
-            <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
-              <AvatarBadge boxSize="1.25em" bg="green.500" />
-            </Avatar>
-          </Square>
-          {/* <Spacer /> */}
-          <Box color="black" ps={5}>
-            <Text fontWeight={600}>Mr Fam</Text>
-            <p>Test@example.com</p>
-          </Box>
+          <MainUser/>
         </Flex>
       </Box>
     </Box>

@@ -11,6 +11,7 @@ interface User {
   name: string;
   pic: string;
   _id: string;
+  token: string;
 }
 
 interface Props {
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const ChatContext = createContext<ChatContextProps>({
-  handleLogin: () => {}
+  handleLogin: () => {},
 });
 
 export const ChatProvider: React.FC<Props> = ({ children }) => {
@@ -31,7 +32,9 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const handleLogin = () => {};
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "");
+    const userInfo = JSON.parse(
+      window.localStorage.getItem("userInfo") || "{}"
+    );
     setUser(userInfo);
     if (!userInfo) {
       navigate("/");

@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
   res.send("API running!!!");
 });
 
-// app.use(notFound);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, console.log(`Server starting port ${PORT}...`));
