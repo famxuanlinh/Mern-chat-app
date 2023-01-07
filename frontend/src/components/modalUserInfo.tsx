@@ -13,8 +13,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React from "react";
+import { useChatContext } from "../contexts/ChatProvider";
 
 const ModalUserInfo = () => {
+  const { user } = useChatContext();
+
   return (
     <>
       <Box>
@@ -26,11 +29,11 @@ const ModalUserInfo = () => {
               <Avatar
                 size="xl"
                 name="Dan Abrahmov"
-                src="https://bit.ly/dan-abramov"
+                src={user?.pic}
               ></Avatar>
             </Center>
             <Center>
-              <Text pt={3} pb={3} fontWeight={600}>Mr Fam</Text>
+              <Text pt={3} pb={3} fontWeight={600}>{user?.name}</Text>
             </Center>
             <Center>
               {" "}

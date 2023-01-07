@@ -6,12 +6,12 @@
 // }
 
 import { Box } from "@chakra-ui/react";
-import { useChatContext } from "../Context/ChatProvider";
-// import SideDrawer from "../components/miscellaneous/SideDrawer";
+import SideBar from "../components/SideBar";
 import MyChats from "../components/MyChats";
+// import { useChatContext } from "../Context/ChatProvider";
+// import SideDrawer from "../components/miscellaneous/SideDrawer";
 // import ChatBox from "../components/ChastBox";
 // import Header from "../components/Header";
-import SideBar from "../components/sideBar";
 
 // interface UserInfo {
 //   name: string;
@@ -19,8 +19,7 @@ import SideBar from "../components/sideBar";
 // }
 
 const Chatspage = () => {
-  const { user } = useChatContext();
-  console.log("Chatspage ~ user", user)
+
 
   return (
     <Box>

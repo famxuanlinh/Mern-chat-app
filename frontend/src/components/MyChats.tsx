@@ -11,11 +11,55 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import ModalUserInfo from "./modalUserInfo";
+import { useEffect, useState } from "react";
+import { useChatContext } from "../contexts/ChatProvider";
+import axios from "axios";
 
 const MyChats = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    user,
+    chats,
+    handleChangeChats,
+    selectedChat,
+    handleChangeSelectedChat,
+  } = useChatContext();
+  const [loggedUser, setLoggedUser] = useState();
+
+  const toast = useToast();
+
+  const fetchChat = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/chat`, config);
+
+      handleChangeChats(data);
+    } catch (err) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+
+  useEffect(() => {
+    setLoggedUser(JSON.parse(window.localStorage.getItem("userInfo") || "{}"));
+    console.log("Logged User", loggedUser);
+    fetchChat()
+  }, []);
 
   return (
     <>
@@ -30,7 +74,11 @@ const MyChats = () => {
       >
         <Flex>
           <Box onClick={onOpen}>
-            <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
+            <Avatar
+              cursor="pointer"
+              name="Dan Abrahmov"
+              src="https://bit.ly/dan-abramov"
+            >
               <AvatarBadge boxSize="1.25em" bg="green.500" />
             </Avatar>
           </Box>
@@ -44,7 +92,6 @@ const MyChats = () => {
               </ModalBody>
             </ModalContent>
           </Modal>
-          {/* <Spacer /> */}
           <Box color="black" ps={5}>
             <strong style={{ fontSize: "18px" }}>Hello hesolili</strong>
             <p style={{ fontSize: "12px" }}>Vừa truy cập</p>
