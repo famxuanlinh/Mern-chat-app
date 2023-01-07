@@ -1,0 +1,5 @@
+<Box 
+  d={{base: seletedChat ? 'none' : 'flex', md: 'flex'}} 
+  w={{base: '100%', md: '31%'}}
+>
+</Box>

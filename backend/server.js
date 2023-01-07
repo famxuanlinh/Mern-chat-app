@@ -6,7 +6,7 @@ const userRouters = require("./routes/userRouters");
 const chatRouters = require("./routes/chatRouters");
 const { notFound, errorHandler } = require("./middlewares/errorMidleware");
 
-const PORT = process.env.PORT || 3004;
+const PORT = process.env.PORT || 3005;
 
 dotenv.config();
 db.connect();
