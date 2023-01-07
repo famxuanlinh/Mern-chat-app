@@ -9,8 +9,8 @@ import {
   Tabs,
   VStack,
 } from "@chakra-ui/react";
-import FormLogin from "../components/formLogin";
-import FormSignup from "../components/formSignup";
+import FormLogin from "../../components/formLogin";
+import FormSignup from "../../components/formSignup";
 import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {

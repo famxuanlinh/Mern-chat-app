@@ -6,8 +6,8 @@
 // }
 
 import { Box } from "@chakra-ui/react";
-import SideBar from "../components/SideBar";
-import MyChats from "../components/MyChats";
+import SideBar from "../../components/SideBar";
+import MyChats from "../../components/MyChats";
 // import { useChatContext } from "../Context/ChatProvider";
 // import SideDrawer from "../components/miscellaneous/SideDrawer";
 // import ChatBox from "../components/ChastBox";
