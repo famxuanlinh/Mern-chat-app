@@ -1,5 +1,5 @@
 
-import { User } from '../contexts/ChatContext/ChatContext'
+import { User } from '@contexts/ChatContext/ChatContext'
 
 const getSender = (loggedUser: User, users: User[]) => {
   return ''

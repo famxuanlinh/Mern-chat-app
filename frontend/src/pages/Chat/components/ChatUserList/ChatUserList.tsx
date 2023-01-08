@@ -22,8 +22,8 @@ import {
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import axios from "axios";
 import CreateChatGroupModal from "../ChatGroup/CreateChatGroupModal";
-import UserCard from "../../../../components/UserCard";
-import { useChatContext } from "../../../../contexts/ChatContext/useChatContext";
+import UserCard from "@components/UserCard";
+import { useChatContext } from "@contexts/ChatContext/useChatContext";
 
 export interface SearchResult {
   _id: string;

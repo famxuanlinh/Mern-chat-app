@@ -13,10 +13,10 @@ import {
     useDisclosure,
     useToast,
   } from "@chakra-ui/react";
-  import UserInfoModal from "../../../../components/UserInfoModal";
+  import UserInfoModal from "@components/UserInfoModal";
   import { useEffect, useState } from "react";
   import axios from "axios";
-import { useChatContext } from "../../../../contexts/ChatContext/useChatContext";
+import { useChatContext } from "@contexts/ChatContext/useChatContext";
   
   const MyChats = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
