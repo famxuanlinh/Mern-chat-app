@@ -6,7 +6,8 @@
       "@pages/*": ["pages/*"],
       "@constants/*": ["constants/*"],
       "@contexts/*": ["contexts/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@apis/*": ["apis/*"]
     }
   }
 }

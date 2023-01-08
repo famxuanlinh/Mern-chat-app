@@ -10,6 +10,7 @@ import {
   import { useToast } from "@chakra-ui/react";
   import axios from "axios";
   import { useNavigate } from "react-router-dom";
+import api from "@apis/api";
   
   const FormLogin = () => {
     const [email, setEmail] = useState("");
@@ -38,13 +39,11 @@ import {
       }
   
       try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-          },
-        };
   
-        const { data } = await axios.post("/api/user/login", config);
+        const { data } = await api.post("/user/login", {
+          email,
+          password
+        });
         // console.log(JSON.stringify(data));
         toast({
           title: "Registration Successful",

@@ -24,6 +24,7 @@ import axios from "axios";
 import CreateChatGroupModal from "../ChatGroup/CreateChatGroupModal";
 import UserCard from "@components/UserCard";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
+import api from "@apis/api";
 
 export interface SearchResult {
   _id: string;
@@ -57,14 +58,7 @@ const SideBar = () => {
 
   const accessChat = async (userId: string) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      };
-
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      const { data } = await api.post(`/chat`, { userId });
       console.log("🚀 ~ file: sideBar.tsx:67 ~ accessChat ~ data", data);
       if(!chats.find((c) => c._id === data._id))  handleChangeChats([data, ...chats])
 
@@ -124,7 +118,7 @@ const SideBar = () => {
         };
 
         const { data } = await axios.get(
-          `/api/user?search=${searchValue}`,
+          `/user?search=${searchValue}`,
           config
         );
 

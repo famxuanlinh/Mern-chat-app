@@ -11,6 +11,7 @@ import {
   import { useToast } from "@chakra-ui/react";
   import axios from "axios";
   import { useNavigate } from "react-router-dom";
+import api from "@apis/api";
   
   const FormSignup = () => {
     const [show, setShow] = useState(false);
@@ -105,21 +106,14 @@ import {
       }
   
       try {
-        //Đối số thứ 3 để chuyền đi.
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-          },
-        };
-        const { data } = await axios.post(
-          "/api/user",
+        const { data } = await api.post(
+          "/user",
           {
             name,
             email,
             password,
             pic,
-          },
-          config
+          }
         );
         console.log(data);
         toast({

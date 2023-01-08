@@ -17,6 +17,7 @@ import {
   import { useEffect, useState } from "react";
   import axios from "axios";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
+import api from "@apis/api";
   
   const MyChats = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,14 +34,8 @@ import { useChatContext } from "@contexts/ChatContext/useChatContext";
   
     const fetchChat = async () => {
       try {
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-          },
-        };
   
-        const { data } = await axios.get(`/api/chat`, config);
+        const { data } = await api.get(`/chat`);
   
         handleChangeChats(data);
       } catch (err) {
