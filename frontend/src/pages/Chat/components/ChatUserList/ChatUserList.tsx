@@ -20,11 +20,10 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { useChatContext } from "../contexts/ChatProvider";
 import axios from "axios";
-import UserItem from "./UserItem";
-import ModalCreateGroup from "./ModalCreateGroup";
-import { getSenderFull } from "../constants/ChatLogic";
+import CreateChatGroupModal from "../ChatGroup/CreateChatGroupModal";
+import UserCard from "../../../../components/UserCard";
+import { useChatContext } from "../../../../contexts/ChatProvider";
 
 export interface SearchResult {
   _id: string;
@@ -188,7 +187,7 @@ const SideBar = () => {
 
         {/* Modal create group */}
         <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-          <ModalCreateGroup />
+          <CreateChatGroupModal />
         </Modal>
       </Flex>
 
@@ -210,7 +209,7 @@ const SideBar = () => {
                   cursor="pointer"
                   onClick={() => accessChat(data._id)}
                 >
-                  <UserItem
+                  <UserCard
                     desc={false}
                     data={data}
                   />
@@ -308,7 +307,7 @@ const SideBar = () => {
       >
         <Flex p={2} ps="16px">
           {user ? (
-            <UserItem
+            <UserCard
               data={{
                 _id: user._id,
                 email: user.email,

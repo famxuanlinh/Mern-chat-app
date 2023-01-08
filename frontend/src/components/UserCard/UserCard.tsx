@@ -14,7 +14,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import ModalUserInfo from "./modalUserInfo";
+import UserInfoModal from "../UserInfoModal";
 import { useNavigate } from "react-router-dom";
 
 export interface UserInfo {
@@ -31,7 +31,7 @@ interface Props {
   btn?: boolean;
 }
 
-const UserItem: React.FC<Props> = ({
+const UserCard: React.FC<Props> = ({
   data,
   desc = true,
   modal = false,
@@ -62,7 +62,7 @@ const UserItem: React.FC<Props> = ({
           <ModalHeader>Account information</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ModalUserInfo />
+            <UserInfoModal />
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -87,4 +87,4 @@ const UserItem: React.FC<Props> = ({
   );
 };
 
-export default UserItem;
+export default UserCard;

@@ -6,8 +6,8 @@
 // }
 
 import { Box } from "@chakra-ui/react";
-import SideBar from "../../components/SideBar";
-import MyChats from "../../components/MyChats";
+import ChatUserList from "./components/ChatUserList";
+import ChatContent from "./components/ChatContent";
 // import { useChatContext } from "../Context/ChatProvider";
 // import SideDrawer from "../components/miscellaneous/SideDrawer";
 // import ChatBox from "../components/ChastBox";
@@ -24,10 +24,10 @@ const Chatspage = () => {
   return (
     <Box>
       {/* {user && <Header />} */}
-      <SideBar />
+      <ChatUserList />
       {/* <SideDrawer /> */}
       <Box ms="344px" >
-        <MyChats />
+        <ChatContent />
         {/* <ChatBox /> */}
       </Box>
     </Box>

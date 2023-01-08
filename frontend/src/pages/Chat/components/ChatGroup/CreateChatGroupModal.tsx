@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-const ModalCreateGroup = () => {
+const CreateChatGroupModal = () => {
   const { onClose } = useDisclosure();
 
   return (
@@ -82,4 +82,4 @@ const ModalCreateGroup = () => {
   );
 };
 
-export default ModalCreateGroup;
+export default CreateChatGroupModal;
