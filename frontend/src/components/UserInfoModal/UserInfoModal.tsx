@@ -13,7 +13,7 @@ import {
     Tr,
   } from "@chakra-ui/react";
   import React from "react";
-import { useChatContext } from "../../contexts/ChatProvider";
+import { useChatContext } from "../../contexts/ChatContext/useChatContext";
   
   const ModalUserInfo = () => {
     const { user } = useChatContext();

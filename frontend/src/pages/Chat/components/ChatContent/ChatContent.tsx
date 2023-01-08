@@ -16,7 +16,7 @@ import {
   import UserInfoModal from "../../../../components/UserInfoModal";
   import { useEffect, useState } from "react";
   import axios from "axios";
-import { useChatContext } from "../../../../contexts/ChatProvider";
+import { useChatContext } from "../../../../contexts/ChatContext/useChatContext";
   
   const MyChats = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
