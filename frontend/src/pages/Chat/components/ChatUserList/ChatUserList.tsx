@@ -111,15 +111,9 @@ const SideBar = () => {
       if (!user && !searchValue) return;
 
       try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        };
 
-        const { data } = await axios.get(
-          `/user?search=${searchValue}`,
-          config
+        const { data } = await api.get(
+          `/user?search=${searchValue}`
         );
 
         setSearchResult(data);
