@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Avatar,
   AvatarBadge,
+  AvatarGroup,
   Box,
   Center,
   Flex,
@@ -9,7 +10,6 @@ import {
   InputGroup,
   InputLeftElement,
   Modal,
-  Square,
   Text,
   useDisclosure,
   useToast,
@@ -20,11 +20,13 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import axios from "axios";
 import CreateChatGroupModal from "../ChatGroup/CreateChatGroupModal";
 import UserCard from "@components/UserCard";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
 import api from "@apis/api";
+import getSender from "@utils/getSender";
+import { LoginUser, User } from "@apis/endpoints/users";
+import getAvatar from "@utils/getAvatar";
 
 export interface SearchResult {
   _id: string;
@@ -39,9 +41,15 @@ const SideBar = () => {
   const [isSearch, setIsSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
-  const [loggedUser, setLoggedUser] = useState();
+  // const [loggedUser, setLoggedUser] = useState<LoginUser>();
 
-  const { user, chats, handleChangeChats, selectedChat, handleChangeSelectedChat } = useChatContext();
+  const {
+    user,
+    chats,
+    handleChangeChats,
+    selectedChat,
+    handleChangeSelectedChat,
+  } = useChatContext();
 
   const handleChange = (e: any): any => {
     setSearchValue(e.target.value);
@@ -57,13 +65,14 @@ const SideBar = () => {
   };
 
   const accessChat = async (userId: string) => {
+    // console.log("userId", userId);
     try {
       const { data } = await api.post(`/chat`, { userId });
-      console.log("🚀 ~ file: sideBar.tsx:67 ~ accessChat ~ data", data);
-      if(!chats.find((c) => c._id === data._id))  handleChangeChats([data, ...chats])
+      if (!chats.find((c) => c._id === data._id))
+        handleChangeChats([data, ...chats]);
 
-      handleChangeSelectedChat(data)
-      onClose()
+      handleChangeSelectedChat(data);
+      setIsSearch(false);
     } catch (err) {
       toast({
         title: "Error Occured!",
@@ -76,45 +85,32 @@ const SideBar = () => {
     }
   };
 
-  // const fetchChat = async () => {
-  //   try {
-  //     const config = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${user?.token}`,
-  //       },
-  //     };
+  const fetchChat = async () => {
+    try {
+      const { data } = await api.get(`/chat`);
+      handleChangeChats(data);
+    } catch (err) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
 
-  //     const { data } = await axios.get(`/api/chat`, config);
-
-  //     handleChangeChats(data);
-  //   } catch (err) {
-  //     toast({
-  //       title: "Error Occured!",
-  //       description: "Failed to Load the Search Results",
-  //       status: "error",
-  //       duration: 5000,
-  //       isClosable: true,
-  //       position: "bottom-left",
-  //     });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   setLoggedUser(JSON.parse(window.localStorage.getItem("userInfo") || "{}"));
-  //   console.log("Logged User", loggedUser);
-  //   fetchChat()
-  // }, []);
+  useEffect(() => {
+    fetchChat();
+  }, []);
 
   useEffect(() => {
     const getSearchresult = async () => {
       if (!user && !searchValue) return;
 
       try {
-
-        const { data } = await api.get(
-          `/user?search=${searchValue}`
-        );
+        const { data } = await api.get(`/user?search=${searchValue}`);
 
         setSearchResult(data);
       } catch (error: any) {
@@ -133,7 +129,6 @@ const SideBar = () => {
       setSearchResult([]);
       return;
     }
-
     getSearchresult();
   }, [searchValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -164,19 +159,20 @@ const SideBar = () => {
           {isSearch ? (
             <button onClick={handleCloseSearchSuggest}>Close</button>
           ) : (
-            <FontAwesomeIcon
-              cursor="pointer"
-              icon={faPropIcon}
-              onClick={onOpen}
-              style={{ padding: "0 10px" }}
-            />
+            // <FontAwesomeIcon
+            //   cursor="pointer"
+            //   icon={faPropIcon}
+            //   onClick={onOpen}
+            //   style={{ padding: "0 10px" }}
+            // />
+            <CreateChatGroupModal />
           )}
         </Center>
 
         {/* Modal create group */}
-        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-          <CreateChatGroupModal />
-        </Modal>
+        {/* <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose}>
+          <CreateChatGroupModal/>
+        </Modal> */}
       </Flex>
 
       {/* Body */}
@@ -197,10 +193,7 @@ const SideBar = () => {
                   cursor="pointer"
                   onClick={() => accessChat(data._id)}
                 >
-                  <UserCard
-                    desc={false}
-                    data={data}
-                  />
+                  <UserCard desc={false} data={data} />
                 </Box>
               ))}
             </>
@@ -212,33 +205,62 @@ const SideBar = () => {
         </>
       ) : (
         <>
-        {chats.map((chat) => (
-          <Box
-          cursor="pointer"
-          _hover={{ background: "#f3f5f6" }}
-          w="100%"
-          p={2}
-          color="white"
-          ps="16px"
-          key={chat._id}
-        >
-          <Flex>
-              <Avatar
-                cursor="pointer"
-                name="Dan Abrahmov"
-                src="https://bit.ly/dan-abramov"
-              >
-                <AvatarBadge boxSize="1.25em" bg="green.500" />
-              </Avatar>
-            <Box color="black" ps={5}>
-              <Text fontWeight={600}>
-              {/* {!chat.isGroupChat ? getSenderFull(loggedUser, chat.users) : ChatBox.chatName} */}
-                </Text>
-              <p>Nay nguoi em yeu hoi</p>
+          {chats.map((chat) => (
+            <Box
+              cursor="pointer"
+              _hover={{ background: "#f3f5f6" }}
+              w="100%"
+              p={2}
+              color="white"
+              ps="16px"
+              key={chat._id}
+            >
+              <Flex>
+                {chat.isGroupChat ? (
+                  <AvatarGroup size="xs" max={3}>
+                    <Avatar
+                      name="Ryan Florence"
+                      src="https://bit.ly/ryan-florence"
+                    />
+                    <Avatar
+                      name="Segun Adebayo"
+                      src="https://bit.ly/sage-adebayo"
+                    />
+                    <Avatar
+                      name="Kent Dodds"
+                      src="https://bit.ly/kent-c-dodds"
+                    />
+                    <Avatar
+                      name="Prosper Otemuyiwa"
+                      src="https://bit.ly/prosper-baba"
+                    />
+                    <Avatar
+                      name="Christian Nwamba"
+                      src="https://bit.ly/code-beast"
+                    />
+                  </AvatarGroup>
+                ) : (
+                  <Avatar
+                    cursor="pointer"
+                    name="Dan Abrahmov"
+                    src={getAvatar(chat.users, user)}
+                  >
+                    <AvatarBadge boxSize="1.25em" bg="green.500" />
+                  </Avatar>
+                )}
+
+                <Box color="black" ps={5}>
+                  <Text fontWeight={600}>
+                    {!chat.isGroupChat
+                      ? getSender(chat.users, user)
+                      : chat.chatName}
+                  </Text>
+                  <Text>{chat.chatName}</Text>
+                  {/* <p>{chat.users[0].name}</p> */}
+                </Box>
+              </Flex>
             </Box>
-          </Flex>
-        </Box>
-        ))}
+          ))}
           {/* <Box
             cursor="pointer"
             _hover={{ background: "#f3f5f6" }}

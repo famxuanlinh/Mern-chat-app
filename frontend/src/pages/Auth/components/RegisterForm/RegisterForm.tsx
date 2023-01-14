@@ -12,6 +12,7 @@ import {
   import axios from "axios";
   import { useNavigate } from "react-router-dom";
 import api from "@apis/api";
+import users from "@apis/endpoints/users";
   
   const FormSignup = () => {
     const [show, setShow] = useState(false);
@@ -19,7 +20,7 @@ import api from "@apis/api";
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
-    const [pic, setPic] = useState();
+    const [pic, setPic] = useState<string>();
     const [picLoading, setPicLoading] = useState<boolean>(false);
   
     let navigate = useNavigate();
@@ -106,15 +107,12 @@ import api from "@apis/api";
       }
   
       try {
-        const { data } = await api.post(
-          "/user",
-          {
-            name,
-            email,
-            password,
-            pic,
-          }
-        );
+        const data = await users.register({
+          name,
+          email,
+          password,
+          pic,
+        })
         console.log(data);
         toast({
           title: "Registration Successful",

@@ -11,50 +11,37 @@ import {
     ModalHeader,
     ModalOverlay,
     useDisclosure,
-    useToast,
   } from "@chakra-ui/react";
   import UserInfoModal from "@components/UserInfoModal";
-  import { useEffect, useState } from "react";
-  import axios from "axios";
-import { useChatContext } from "@contexts/ChatContext/useChatContext";
-import api from "@apis/api";
-  
+
   const MyChats = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {
-      user,
-      chats,
-      handleChangeChats,
-      selectedChat,
-      handleChangeSelectedChat,
-    } = useChatContext();
-    const [loggedUser, setLoggedUser] = useState();
+
   
-    const toast = useToast();
   
-    const fetchChat = async () => {
-      try {
+    // const fetchChat = async () => {
+    //   try {
   
-        const { data } = await api.get(`/chat`);
+    //     const { data } = await api.get(`/chat`);
   
-        handleChangeChats(data);
-      } catch (err) {
-        toast({
-          title: "Error Occured!",
-          description: "Failed to Load the Search Results",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom-left",
-        });
-      }
-    };
+    //     handleChangeChats(data);
+    //   } catch (err) {
+    //     toast({
+    //       title: "Error Occured!",
+    //       description: "Failed to Load the Search Results",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: true,
+    //       position: "bottom-left",
+    //     });
+    //   }
+    // };
   
-    useEffect(() => {
-      setLoggedUser(JSON.parse(window.localStorage.getItem("userInfo") || "{}"));
-      console.log("Logged User", loggedUser);
-      fetchChat()
-    }, []);
+    // useEffect(() => {
+    //   setLoggedUser(JSON.parse(window.localStorage.getItem("userInfo") || "{}"));
+    //   console.log("Logged User", loggedUser);
+    //   fetchChat()
+    // }, []);
   
     return (
       <>

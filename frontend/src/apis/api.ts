@@ -13,6 +13,9 @@ const api = axios.create({
   timeout: 1000,
 });
 
+
+//Do get token sẽ chạy 1 lần và keep dữ liệu lúc khởi tạo dự án.
+//Nên ts có interceptors để khắc phục tình trạng đó. Gọi lại mới mỗi lần ấn
 api.interceptors.request.use(
   (config) => {
     if (config.headers) {

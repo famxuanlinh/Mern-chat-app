@@ -13,6 +13,7 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
+  Checkbox,
 } from "@chakra-ui/react";
 import UserInfoModal from "../UserInfoModal";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +30,7 @@ interface Props {
   desc?: boolean;
   modal?: boolean;
   btn?: boolean;
+  check?: boolean;
 }
 
 const UserCard: React.FC<Props> = ({
@@ -36,6 +38,7 @@ const UserCard: React.FC<Props> = ({
   desc = true,
   modal = false,
   btn = false,
+  check = false,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -48,6 +51,7 @@ const UserCard: React.FC<Props> = ({
 
   return (
     <>
+      {/* {check ? <Checkbox me={2} colorScheme="blue" defaultChecked={false} /> : null} */}
       <Avatar
         onClick={modal ? onOpen : undefined}
         cursor="pointer"

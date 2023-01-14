@@ -9,8 +9,9 @@ const { protect } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 
-router.post("/login", authUser);
-router.route("/").post(registerUser).get(protect, allUsers);
+router.route("/login").post(authUser);
+router.route("/register").post(registerUser);
+router.route("/").get(protect, allUsers);
 
 // app.get("/api/chat", (req, res) => {
 //     res.send(chats);
