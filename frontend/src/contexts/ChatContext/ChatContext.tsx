@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 interface ChatContextProps {
   user?: LoginUser;
-  chats: Chat[];
-  handleChangeChats: (chats: Chat[]) => void;
+  chatsContent: Chat[];
+  handleChangeChats: (chatsContent: Chat[]) => void;
   handleChangeSelectedChat: (selectedChat: Chat) => void;
   selectedChat?: Chat;
 }
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ChatContext = createContext<ChatContextProps>({
-  chats: [],
+  chatsContent: [],
   handleChangeChats: () => {},
   handleChangeSelectedChat: () => {},
 });
@@ -24,12 +24,12 @@ const ChatContext = createContext<ChatContextProps>({
 export const ChatProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<LoginUser>();
   const [selectedChat, setSelectedChat] = useState<Chat>();
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chatsContent, setChatsContent] = useState<Chat[]>([]);
 
   const navigate = useNavigate();
 
-  const handleChangeChats = (chats: Chat[]): void => {
-    setChats(chats);
+  const handleChangeChats = (data: Chat[]): void => {
+    setChatsContent(data);
   };
 
   const handleChangeSelectedChat = (selectedChat: Chat): void => {
@@ -50,7 +50,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
     <ChatContext.Provider
       value={{
         user,
-        chats,
+        chatsContent,
         handleChangeChats,
         selectedChat,
         handleChangeSelectedChat,

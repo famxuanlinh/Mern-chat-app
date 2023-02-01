@@ -19,7 +19,6 @@ const Homepage = () => {
   useEffect(() => {
 
     const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    console.log("🚀 ~ file: Homepage.tsx:22 ~ useEffect ~ userInfo", typeof userInfo)
     if (userInfo === "{}") {
       navigate("/chat");
     }

@@ -71,7 +71,7 @@ const UserCard: React.FC<Props> = ({
         </ModalContent>
       </Modal>
       <Center>
-        <Box color="black" ps={5} fontWeight={600}>
+        <Box color="black" ps={5} fontWeight={600} >
           {data.name}
           {desc ? <Text fontWeight={400}>{data.email}</Text> : null}
         </Box>

@@ -9,7 +9,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Modal,
   Text,
   useDisclosure,
   useToast,
@@ -25,7 +24,6 @@ import UserCard from "@components/UserCard";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
 import api from "@apis/api";
 import getSender from "@utils/getSender";
-import { LoginUser, User } from "@apis/endpoints/users";
 import getAvatar from "@utils/getAvatar";
 
 export interface SearchResult {
@@ -37,39 +35,32 @@ export interface SearchResult {
 
 const SideBar = () => {
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSearch, setIsSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
-  // const [loggedUser, setLoggedUser] = useState<LoginUser>();
+  const faSearchIcon = faMagnifyingGlass as IconProp;
 
-  const {
-    user,
-    chats,
-    handleChangeChats,
-    selectedChat,
-    handleChangeSelectedChat,
-  } = useChatContext();
+  const { user, chatsContent, handleChangeChats, handleChangeSelectedChat } =
+    useChatContext();
+
 
   const handleChange = (e: any): any => {
     setSearchValue(e.target.value);
   };
 
-  const faPropIcon = faUserGroup as IconProp;
-  const faSearchIcon = faMagnifyingGlass as IconProp;
-
   const handleOpenSearchSuggest = () => setIsSearch(true);
+
   const handleCloseSearchSuggest = () => {
     setIsSearch(false);
     setSearchValue("");
   };
 
   const accessChat = async (userId: string) => {
-    // console.log("userId", userId);
     try {
       const { data } = await api.post(`/chat`, { userId });
-      if (!chats.find((c) => c._id === data._id))
-        handleChangeChats([data, ...chats]);
+      if (!chatsContent.find((c) => c._id === data._id))
+        handleChangeChats([data, ...chatsContent]);
 
       handleChangeSelectedChat(data);
       setIsSearch(false);
@@ -159,20 +150,9 @@ const SideBar = () => {
           {isSearch ? (
             <button onClick={handleCloseSearchSuggest}>Close</button>
           ) : (
-            // <FontAwesomeIcon
-            //   cursor="pointer"
-            //   icon={faPropIcon}
-            //   onClick={onOpen}
-            //   style={{ padding: "0 10px" }}
-            // />
             <CreateChatGroupModal />
           )}
         </Center>
-
-        {/* Modal create group */}
-        {/* <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose}>
-          <CreateChatGroupModal/>
-        </Modal> */}
       </Flex>
 
       {/* Body */}
@@ -204,8 +184,8 @@ const SideBar = () => {
           )}
         </>
       ) : (
-        <>
-          {chats.map((chat) => (
+        <Box maxHeight={"80%"} minHeight={"50%"} overflowY="auto">
+          {chatsContent.map((chat) => (
             <Box
               cursor="pointer"
               _hover={{ background: "#f3f5f6" }}
@@ -217,27 +197,14 @@ const SideBar = () => {
             >
               <Flex>
                 {chat.isGroupChat ? (
-                  <AvatarGroup size="xs" max={3}>
-                    <Avatar
-                      name="Ryan Florence"
-                      src="https://bit.ly/ryan-florence"
-                    />
-                    <Avatar
-                      name="Segun Adebayo"
-                      src="https://bit.ly/sage-adebayo"
-                    />
-                    <Avatar
-                      name="Kent Dodds"
-                      src="https://bit.ly/kent-c-dodds"
-                    />
-                    <Avatar
-                      name="Prosper Otemuyiwa"
-                      src="https://bit.ly/prosper-baba"
-                    />
-                    <Avatar
-                      name="Christian Nwamba"
-                      src="https://bit.ly/code-beast"
-                    />
+                  <AvatarGroup size="xs" max={2}>
+                    {chat.users.map((user) => (
+                      <Avatar
+                        key={user._id}
+                        name="Ryan Florence"
+                        src={user.pic}
+                      />
+                    ))}
                   </AvatarGroup>
                 ) : (
                   <Avatar
@@ -261,49 +228,7 @@ const SideBar = () => {
               </Flex>
             </Box>
           ))}
-          {/* <Box
-            cursor="pointer"
-            _hover={{ background: "#f3f5f6" }}
-            w="100%"
-            p={2}
-            color="white"
-            ps="16px"
-          >
-            <Flex>
-                <Avatar
-                  cursor="pointer"
-                  name="Dan Abrahmov"
-                  src="https://bit.ly/dan-abramov"
-                >
-                  <AvatarBadge boxSize="1.25em" bg="green.500" />
-                </Avatar>
-              <Box color="black" ps={5}>
-                <Text fontWeight={600}>Hello hesolili</Text>
-                <p>Email: helle@example.com</p>
-              </Box>
-            </Flex>
-          </Box>
-          <Box
-            cursor="pointer"
-            _hover={{ background: "#edf2f6" }}
-            w="100%"
-            p={2}
-            color="white"
-            ps="16px"
-          >
-            <Flex>
-              <Square>
-                <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov">
-                  <AvatarBadge boxSize="1.25em" bg="green.500" />
-                </Avatar>
-              </Square>
-              <Box color="black" ps={5}>
-                <h2>Hello hesolili</h2>
-                <p>Email: helle@example.com</p>
-              </Box>
-            </Flex>
-          </Box> */}
-        </>
+        </Box>
       )}
 
       {/* Footer */}
