@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const db = require("./config/db");
 const userRouters = require("./routes/userRouters");
 const chatRouters = require("./routes/chatRouters");
+const messageRouters = require("./routes/messageRouters");
 const { notFound, errorHandler } = require("./middlewares/errorMidleware");
 const cors = require('cors')
 const PORT = process.env.PORT || 3005;
@@ -19,6 +20,7 @@ app.use(express.json()); //To accept JSON data
 // route(app);
 app.use("/api/chat", chatRouters);
 app.use("/api/user", userRouters);
+app.use("/api/message", messageRouters);
 
 app.get("/", (req, res) => {
   res.send("API running!!!");

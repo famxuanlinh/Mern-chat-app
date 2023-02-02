@@ -194,6 +194,7 @@ const SideBar = () => {
               color="white"
               ps="16px"
               key={chat._id}
+              onClick={() => handleChangeSelectedChat(chat)}
             >
               <Flex>
                 {chat.isGroupChat ? (
@@ -201,7 +202,7 @@ const SideBar = () => {
                     {chat.users.map((user) => (
                       <Avatar
                         key={user._id}
-                        name="Ryan Florence"
+                        name={user.name}
                         src={user.pic}
                       />
                     ))}

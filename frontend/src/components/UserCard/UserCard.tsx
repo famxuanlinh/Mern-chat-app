@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import UserInfoModal from "../UserInfoModal";
 import { useNavigate } from "react-router-dom";
+import { useChatContext } from "@contexts/ChatContext/ChatContext";
 
 export interface UserInfo {
   name: string;
@@ -66,12 +67,12 @@ const UserCard: React.FC<Props> = ({
           <ModalHeader>Account information</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <UserInfoModal />
+            {/* <UserInfoModal  /> */}
           </ModalBody>
         </ModalContent>
       </Modal>
       <Center>
-        <Box color="black" ps={5} fontWeight={600} >
+        <Box color="black" ps={5} fontWeight={600}>
           {data.name}
           {desc ? <Text fontWeight={400}>{data.email}</Text> : null}
         </Box>
