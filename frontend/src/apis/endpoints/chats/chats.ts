@@ -13,26 +13,15 @@ export interface ChatGroup {
   users: string;
 }
 
-/**
- * Get chat list
- * @returns Chat[]
- */
+// Get chat list
 const getMany = (): Promise<Chat[]> => {
   return api.get("/chat");
 };
 
-/**
- * Create a new Chat
- * @param payload Object
- * @returns Chat
- */
+// Create a new Chat
 const create = (payload: ChatGroup): Promise<Chat> => {
   return api.post("/chat/group", payload).then((res) => res.data);
 };
-
-// const create = (payload: {userId: string}): Promise<Chat> => {
-//     return api.post('/chat', payload)
-// }
 
 const messages = {
   getMany,

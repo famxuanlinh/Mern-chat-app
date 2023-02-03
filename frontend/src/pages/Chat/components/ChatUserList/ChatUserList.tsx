@@ -159,7 +159,7 @@ const SideBar = () => {
       {isSearch ? (
         <>
           {searchResult.length !== 0 ? (
-            <>
+            <Box maxHeight={"80%"} minHeight={"50%"} overflowY="auto">
               {searchResult.map((data) => (
                 <Box
                   key={data._id}
@@ -176,7 +176,7 @@ const SideBar = () => {
                   <UserCard desc={false} data={data} />
                 </Box>
               ))}
-            </>
+            </Box>
           ) : (
             <Center pt={90} fontSize={20}>
               Not result

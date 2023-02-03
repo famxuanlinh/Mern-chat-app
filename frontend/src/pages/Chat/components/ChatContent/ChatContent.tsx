@@ -13,44 +13,87 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  Spinner,
+  FormControl,
+  useToast,
 } from "@chakra-ui/react";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
 
 import UserInfoModal from "@components/UserInfoModal";
 import getAvatar from "@utils/getAvatar";
 import getSender from "@utils/getSender";
+import { useEffect, useState } from "react";
+import messagesApi, { Message } from "@apis/endpoints/messages/messagesApi";
+import api from "@apis/api";
+import ScrollableChat from "./ScrollableChat";
 
 const ChatContent = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { selectedChat, user } = useChatContext();
-  console.log(selectedChat);
 
-  // const fetchChat = async () => {
-  //   try {
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
 
-  //     const { data } = await api.get(`/chat`);
+    try {
+      const { data } = await api.get(`/message/${selectedChat._id}`);
 
-  //     handleChangeChats(data);
-  //   } catch (err) {
-  //     toast({
-  //       title: "Error Occured!",
-  //       description: "Failed to Load the Search Results",
-  //       status: "error",
-  //       duration: 5000,
-  //       isClosable: true,
-  //       position: "bottom-left",
-  //     });
-  //   }
-  // };
+      setMessages(data);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
 
-  // useEffect(() => {
-  //   setLoggedUser(JSON.parse(window.localStorage.getItem("userInfo") || "{}"));
-  //   console.log("Logged User", loggedUser);
-  //   fetchChat()
-  // }, []);
+  useEffect(() => {
+    fetchMessages();
+  }, [selectedChat]);
+
+  const sendMessage = async (event: any) => {
+    if (event.key === "Enter" && newMessage) {
+      // console.log("Send message");
+
+      try {
+        const data = await messagesApi.sendMessage({
+          content: newMessage,
+          chatId: selectedChat?._id,
+        });
+        // console.log("data", data);
+        setNewMessage("");
+        setMessages([data, ...messages]);
+      } catch (error) {
+        toast({
+          title: "Error Occured!",
+          description: "Failed to Load the Search Results",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-left",
+        });
+      }
+    }
+  };
+
+  const typingHandler = (e: any) => {
+    setNewMessage(e.target.value);
+
+    // Typing Indicator Logic
+  };
 
   return (
-    <>
+    <Box ps="344px" w="100%">
+      {/* Header */}
       {selectedChat ? (
         <>
           <Box
@@ -61,6 +104,7 @@ const ChatContent = () => {
             borderBottom="1px"
             borderColor="gray.200"
             bg="white"
+            zIndex={999}
           >
             <Flex>
               <Box onClick={onOpen}>
@@ -86,7 +130,7 @@ const ChatContent = () => {
                   <ModalHeader>Account information</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <UserInfoModal selectedChat={selectedChat}/>
+                    <UserInfoModal selectedChat={selectedChat} />
                   </ModalBody>
                 </ModalContent>
               </Modal>
@@ -105,15 +149,47 @@ const ChatContent = () => {
               </Box>
             </Flex>
           </Box>
-          <Box bg="#eef0f1" height="94vh" pt={100} ps={2}>
-            {/* <div>Chúc mừng năm mới. Một năm mới cố gắng lên nhé.</div>
-          <p>Chắc chắn làm được</p> */}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit minus
-            ab necessitatibus sint officiis, id aspernatur, ratione architecto
-            similique eius vitae obcaecati itaque corporis unde quos vel optio
-            rerum esse.
+
+          {/* Body */}
+          <Box
+            display="flex"
+            flexDir="column"
+            justifyContent="flex-end"
+            p={3}
+            bg="#E8E8E8"
+            w="100%"
+            h="100%"
+            borderRadius="lg"
+            overflowY="hidden"
+            pt='70px'
+            pb='60px'
+          >
+            {loading ? (
+              <Spinner
+                size="s"
+                w={20}
+                h={20}
+                alignSelf="center"
+                margin="auto"
+              />
+            ) : (
+              <Box
+                style={
+                  {
+                    // display: "flex",
+                    // flexDirection: "column",
+                    // overflowY: "scroll",
+                    // scrollbarWidth: "none",
+                  }
+                }
+                mb="140px"
+              >
+                <ScrollableChat messages={messages} />
+              </Box>
+            )}
           </Box>
 
+          {/* Footer */}
           <Box
             pos="fixed"
             bottom={0}
@@ -122,7 +198,15 @@ const ChatContent = () => {
             w="100%"
             bg="white"
           >
-            <Input variant="unstyled" placeholder="Write something" p={4} />
+            <FormControl onKeyDown={sendMessage} isRequired>
+              <Input
+                variant="unstyled"
+                placeholder="Enter a message..."
+                p={4}
+                onChange={typingHandler}
+                value={newMessage}
+              />
+            </FormControl>
           </Box>
         </>
       ) : (
@@ -130,7 +214,7 @@ const ChatContent = () => {
           Click on a user to start chatting
         </Center>
       )}
-    </>
+    </Box>
   );
 };
 

@@ -34,9 +34,12 @@ src
                 | RegisterForm (.ts)
         | Chat (.ts)
             | components
-                | ChatContent (.ts)
+                | ChatContent (.ts) (message)
                 | ChatGroup (.ts)
-                | ChatUserList (.ts)
+                    | ChatGroupModal.ts
+                    | Empty.ts
+                    | SelectedUser.ts
+                | ChatUserList (.ts) (sidebar)
         | NotFound (.ts)
     | utils
         | getAvatar.ts
