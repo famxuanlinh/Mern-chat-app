@@ -26,11 +26,16 @@ import { useEffect, useState } from "react";
 import messagesApi, { Message } from "@apis/endpoints/messages/messagesApi";
 import api from "@apis/api";
 import ScrollableChat from "./ScrollableChat";
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:3005";
+var socket, selectedChatCompare;
 
 const ChatContent = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,6 +49,9 @@ const ChatContent = () => {
 
       setMessages(data);
       setLoading(false);
+
+      socket = io(ENDPOINT);
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -84,6 +92,12 @@ const ChatContent = () => {
       }
     }
   };
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
 
   const typingHandler = (e: any) => {
     setNewMessage(e.target.value);
@@ -161,8 +175,8 @@ const ChatContent = () => {
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
-            pt='70px'
-            pb='60px'
+            pt="70px"
+            pb="60px"
           >
             {loading ? (
               <Spinner

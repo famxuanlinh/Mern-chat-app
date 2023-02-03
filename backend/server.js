@@ -27,6 +27,35 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, console.log(`Server starting port ${PORT}...`));
+const server = app.listen(PORT, console.log(`Server starting port ${PORT}...`));
 
 
+
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    // credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  // socket.on("setup", (userData) => {
+  //   socket.join(userData._id);
+  //   socket.emit("connected");
+  });
+
+io.on("connection", (socket) => {
+  console.log("connect to socket.io");
+
+  socket.on("setup", (userData) => {
+    socket.join(userData._id)
+    socket.emit("connected");
+  })
+
+  socket.on("join chat", (room) => {
+    socket.join(room)
+    console.log("User Joined Room" + room);
+  })
+});
