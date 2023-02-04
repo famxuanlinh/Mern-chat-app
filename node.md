@@ -44,3 +44,12 @@ src
     | utils
         | getAvatar.ts
         | getSenfer.ts
+
+
+
+ // window.scrollTo({
+    //   left: 0,
+    //   top: document.body.scrollHeight,
+    //   behavior: "smooth",
+    // });
+    // console.log(user?._id)

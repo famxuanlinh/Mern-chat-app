@@ -26,10 +26,13 @@ import { useEffect, useState } from "react";
 import messagesApi, { Message } from "@apis/endpoints/messages/messagesApi";
 import api from "@apis/api";
 import ScrollableChat from "./ScrollableChat";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
+import { Chat } from "@apis/endpoints/chats";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 const ENDPOINT = "http://localhost:3005";
-var socket, selectedChatCompare;
+var socket: Socket<DefaultEventsMap, DefaultEventsMap>,
+  selectedChatCompare: Chat | undefined;
 
 const ChatContent = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -50,7 +53,6 @@ const ChatContent = () => {
       setMessages(data);
       setLoading(false);
 
-      socket = io(ENDPOINT);
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
@@ -64,22 +66,17 @@ const ChatContent = () => {
     }
   };
 
-  useEffect(() => {
-    fetchMessages();
-  }, [selectedChat]);
-
   const sendMessage = async (event: any) => {
     if (event.key === "Enter" && newMessage) {
-      // console.log("Send message");
-
       try {
+        setNewMessage("");
         const data = await messagesApi.sendMessage({
           content: newMessage,
           chatId: selectedChat?._id,
         });
-        // console.log("data", data);
-        setNewMessage("");
-        setMessages([data, ...messages]);
+
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -96,7 +93,33 @@ const ChatContent = () => {
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
+    socket.on("connected", () => setSocketConnected(true));
+
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+
+    selectedChatCompare = selectedChat;
+    // eslint-disable-next-line
+  }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageReceived) => {
+      console.log("🚀 ~ file: ChatContent.tsx:110 ~ socket.on ~ newMessageReceived", newMessageReceived)
+      console.log("socket here");
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        //give notification
+        console.log("helo");
+      } else {
+        setMessages([newMessageReceived, ...messages]);
+        // console.log(messages);
+      }
+    });
   }, []);
 
   const typingHandler = (e: any) => {
