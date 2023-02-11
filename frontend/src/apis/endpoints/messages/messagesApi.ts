@@ -25,7 +25,7 @@ export interface SendMessage {
 
 
 const sendMessage = (payload: SendMessage): Promise<Message> => {
-  return api.post("/message", payload);
+  return api.post("/message", payload).then((res)=>res.data);
 };
 
 const messagesApi = {

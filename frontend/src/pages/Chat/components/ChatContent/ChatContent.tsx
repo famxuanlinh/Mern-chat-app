@@ -44,6 +44,8 @@ const ChatContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { selectedChat, user } = useChatContext();
 
+console.log({selectedChat})
+
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
@@ -74,7 +76,6 @@ const ChatContent = () => {
           content: newMessage,
           chatId: selectedChat?._id,
         });
-
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -90,25 +91,30 @@ const ChatContent = () => {
     }
   };
 
+  console.log("connected: ", socket?.connected)
+
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on("connected", () => setSocketConnected(true));
+    socket.on("connected", () => {
+      setSocketConnected(true)
+    });
 
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     fetchMessages();
-
+    
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
-  }, [selectedChat]);
+  }, [selectedChat?._id]);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageReceived) => {
       console.log("🚀 ~ file: ChatContent.tsx:110 ~ socket.on ~ newMessageReceived", newMessageReceived)
       console.log("socket here");
+      // check not sending user
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
@@ -116,17 +122,19 @@ const ChatContent = () => {
         //give notification
         console.log("helo");
       } else {
-        setMessages([newMessageReceived, ...messages]);
+        setMessages([...messages, newMessageReceived]);
         // console.log(messages);
       }
     });
-  }, []);
+  });
 
   const typingHandler = (e: any) => {
     setNewMessage(e.target.value);
 
     // Typing Indicator Logic
   };
+
+  
 
   return (
     <Box ps="344px" w="100%">

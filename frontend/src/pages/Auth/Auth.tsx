@@ -36,7 +36,7 @@ const Homepage = () => {
         >
           <Box color="gray" pb={2} as="b" fontSize="36px">
             {" "}
-            Talk A Tive
+            Chat app
           </Box>
           <Tabs pt={4} pb={4}>
             <TabList>

@@ -9,7 +9,7 @@ import {
 import React, { useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import api from "@apis/api";
+// import api from "@apis/api";
 import users from "@apis/endpoints/users";
 
 const FormLogin = () => {
@@ -75,6 +75,7 @@ const FormLogin = () => {
         <Input
           value={email}
           type="email"
+          name="email"
           size="sm"
           placeholder="Enter your email address"
           onChange={(e: any): any => setEmail(e.target.value)}
@@ -88,6 +89,7 @@ const FormLogin = () => {
             pr="4.5rem"
             type={show ? "text" : "password"}
             placeholder="Enter password"
+            name= 'password'
             onChange={(e: any): any => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">

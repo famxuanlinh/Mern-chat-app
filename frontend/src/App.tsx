@@ -1,10 +1,13 @@
 import "./App.css";
-import {  Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Chat from "./pages/Chat";
 import Auth from "./pages/Auth";
+import { useChatContext } from "@contexts/ChatContext/useChatContext";
 
 function App() {
+  const { user } = useChatContext();
+
   return (
     <div className="App">
       {/* <Router> */}
