@@ -51,16 +51,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new message", (newMessageReceived) => {
+    // console.log({newMessageReceived})
 
-    var chat = newMessageReceived.data.chat;
+    var chat = newMessageReceived.chat;
     
 
     if (!chat.users) return console.log("chat.users not defined");
-
+    // console.log({ids: chat.users?.map((item) => item._id)})
     chat.users.forEach((user) => {
       // if (user._id == newMessageReceived.data.sender._id) return;
-
-      socket.in(user._id).emit("message recieved", newMessageReceived.data);
+      console.log(user._id)
+      // socket.in(user._id).emit("message recieved", newMessageReceived);
+      io.sockets.in(user._id).emit("message recieved", newMessageReceived);
     });
   });
 });
