@@ -5,7 +5,7 @@ import isLastMessage from "@utils/isLastMessage";
 import isSameSender from "@utils/isSameSender";
 import isSameSenderMargin from "@utils/isSameSenderMargin";
 import isSameUser from "@utils/isSameUser";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 
 interface Props {
@@ -13,7 +13,26 @@ interface Props {
 }
 
 const ScrollableChat: React.FC<Props> = ({ messages }) => {
-  const { user } = useChatContext();
+  const { user, selectedChat } = useChatContext();
+  const chatContentRef = useRef<HTMLDivElement>(null);
+
+  // const scrollToMyRef = () => {
+  //   if (!chatContentRef.current) return;
+  //   console.log("Hell scroll")
+  //   const scroll =
+  //     chatContentRef.current.scrollHeight - chatContentRef.current.clientHeight;
+  //   chatContentRef.current.scrollTo(0, scroll);
+  // };
+
+  const scrollToBottom = () => {
+    if (!chatContentRef.current) return;
+  console.log('hello agian')
+    chatContentRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedChat, messages]);
 
   return (
     <Box>
@@ -54,6 +73,7 @@ const ScrollableChat: React.FC<Props> = ({ messages }) => {
             </span>
           </div>
         ))}
+      <div ref={chatContentRef} />
     </Box>
   );
 };

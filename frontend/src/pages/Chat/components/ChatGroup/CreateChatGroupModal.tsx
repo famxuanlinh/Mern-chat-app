@@ -18,6 +18,7 @@ import {
   Modal,
   Wrap,
   WrapItem,
+  Flex,
 } from "@chakra-ui/react";
 import { SearchResult } from "../ChatUserList/ChatUserList";
 import { useChatContext } from "@contexts/ChatContext/ChatContext";
@@ -142,12 +143,15 @@ const CreateChatGroupModal = () => {
 
   return (
     <>
-      <FontAwesomeIcon
-        cursor="pointer"
-        icon={faPropIcon}
-        onClick={onOpen}
-        style={{ padding: "0 10px" }}
-      />
+      <Flex alignItems="center" bg="#f5f5f5" borderRadius='50%'>
+        <FontAwesomeIcon
+          cursor="pointer"
+          icon={faPropIcon}
+          onClick={onOpen}
+          style={{ padding: "0 10px" }}
+          fontSize="16px"
+        />
+      </Flex>
       <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent width={"520px"}>

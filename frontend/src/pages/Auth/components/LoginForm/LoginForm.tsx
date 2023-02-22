@@ -24,6 +24,10 @@ const FormLogin = () => {
 
   const handleClick = () => setShow(!show);
 
+  // const handerLogIn = (e: any) => {
+  //   console.log(e.target.value)
+  // }
+
   const submitHandler = async () => {
     setLoading(true);
     if (!email && !password) {
@@ -54,7 +58,7 @@ const FormLogin = () => {
 
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      navigate("/chat");
+      navigate("/");
     } catch (error: any) {
       toast({
         title: "Error Occured!",
@@ -69,7 +73,7 @@ const FormLogin = () => {
   };
 
   return (
-    <div>
+    <form>
       <FormControl isRequired>
         <FormLabel>Email address </FormLabel>
         <Input
@@ -89,7 +93,7 @@ const FormLogin = () => {
             pr="4.5rem"
             type={show ? "text" : "password"}
             placeholder="Enter password"
-            name= 'password'
+            name="password"
             onChange={(e: any): any => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -108,6 +112,8 @@ const FormLogin = () => {
         size="sm"
         onClick={submitHandler}
         isLoading={loading}
+        type="submit"
+        // onKeyDown={handerLogIn}
       >
         Login
       </Button>
@@ -123,7 +129,7 @@ const FormLogin = () => {
       >
         Get guest user credentials
       </Button>
-    </div>
+    </form>
   );
 };
 

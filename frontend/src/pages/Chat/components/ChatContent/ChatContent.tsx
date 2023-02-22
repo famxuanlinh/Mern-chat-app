@@ -22,13 +22,15 @@ import { useChatContext } from "@contexts/ChatContext/useChatContext";
 import UserInfoModal from "@components/UserInfoModal";
 import getAvatar from "@utils/getAvatar";
 import getSender from "@utils/getSender";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import messagesApi, { Message } from "@apis/endpoints/messages/messagesApi";
 import api from "@apis/api";
 import ScrollableChat from "./ScrollableChat";
 import io, { Socket } from "socket.io-client";
 import { Chat } from "@apis/endpoints/chats";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
+import Lottie from "react-lottie";
+import animationData from "../../../../animations/typing.json";
 
 const ENDPOINT = "http://localhost:3005";
 var socket: Socket<DefaultEventsMap, DefaultEventsMap>,
@@ -39,12 +41,21 @@ const ChatContent = () => {
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedChat, user } = useChatContext();
-
-console.log({selectedChat})
+  const { selectedChat, user, notification, handleNotification } =
+    useChatContext();
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -70,6 +81,7 @@ console.log({selectedChat})
 
   const sendMessage = async (event: any) => {
     if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat?._id);
       try {
         setNewMessage("");
         const data = await messagesApi.sendMessage({
@@ -91,39 +103,36 @@ console.log({selectedChat})
     }
   };
 
-  console.log("connected: ", socket?.connected)
-
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => {
-      setSocketConnected(true)
+      setSocketConnected(true);
     });
+    socket.on("typing", () => setTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
 
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     fetchMessages();
-    
+
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat?._id]);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageReceived) => {
-      console.log("🚀 ~ file: ChatContent.tsx:110 ~ socket.on ~ newMessageReceived", newMessageReceived)
-      console.log("socket here");
-      // check not sending user
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        //give notification
-        console.log("helo");
+        if (!notification?.includes(newMessageReceived)) {
+          handleNotification([newMessageReceived, ...notification]);
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
-        // console.log(messages);
       }
     });
   });
@@ -131,13 +140,27 @@ console.log({selectedChat})
   const typingHandler = (e: any) => {
     setNewMessage(e.target.value);
 
-    // Typing Indicator Logic
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat?._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat?._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
-  
-
   return (
-    <Box ps="344px" w="100%">
+    <Box ps="344px" w="100%" h="100%">
       {/* Header */}
       {selectedChat ? (
         <>
@@ -149,7 +172,7 @@ console.log({selectedChat})
             borderBottom="1px"
             borderColor="gray.200"
             bg="white"
-            zIndex={999}
+            zIndex={99}
           >
             <Flex>
               <Box onClick={onOpen}>
@@ -205,7 +228,7 @@ console.log({selectedChat})
             w="100%"
             h="100%"
             borderRadius="lg"
-            overflowY="hidden"
+            // overflowY="hidden"
             pt="70px"
             pb="60px"
           >
@@ -242,8 +265,21 @@ console.log({selectedChat})
             borderColor="gray.200"
             w="100%"
             bg="white"
+            overflowY="hidden"
           >
             <FormControl onKeyDown={sendMessage} isRequired>
+              {typing ? (
+                <>
+                  <Lottie
+                    options={defaultOptions}
+                    // height={50}
+                    width={50}
+                    style={{ marginBottom: 15, marginLeft: 0 }}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
               <Input
                 variant="unstyled"
                 placeholder="Enter a message..."

@@ -4,20 +4,18 @@ import {
   AvatarBadge,
   AvatarGroup,
   Box,
+  Button,
   Center,
   Flex,
   Input,
   InputGroup,
   InputLeftElement,
+  Spacer,
   Text,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMagnifyingGlass,
-  faUserGroup,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import CreateChatGroupModal from "../ChatGroup/CreateChatGroupModal";
 import UserCard from "@components/UserCard";
@@ -35,15 +33,13 @@ export interface SearchResult {
 
 const SideBar = () => {
   const toast = useToast();
-  // const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSearch, setIsSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const faSearchIcon = faMagnifyingGlass as IconProp;
 
-  const { user, chatsContent, handleChangeChats, handleChangeSelectedChat } =
+  const { user, selectedChat, chatsContent, handleChangeChats, handleChangeSelectedChat } =
     useChatContext();
-
 
   const handleChange = (e: any): any => {
     setSearchValue(e.target.value);
@@ -125,21 +121,44 @@ const SideBar = () => {
 
   return (
     <Box
-      w="344px"
+      minWidth="344px"
       h="100%"
       borderRight="1px"
       pos="fixed"
+      // display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      // w={{ base: "100%", md: "31%" }}
+      // flexDir="column"
       borderColor="gray.200"
-      pt="16px"
     >
-      <Flex borderBottom="1px" borderColor="gray.200" pb={4} ps="16px">
-        {/* Header */}
-        <InputGroup onClick={handleOpenSearchSuggest}>
+      <Box 
+      // w="344px" 
+      pt="8px">
+        {user ? (
+          <UserCard
+            data={{
+              _id: user._id,
+              email: user.email,
+              name: user.name,
+              pic: user.pic,
+            }}
+            modal
+            btn
+          />
+        ) : null}
+      </Box>
+      <Flex borderBottom="1px" borderColor="gray.200" pt={1} pb={2} ps="16px">
+        <InputGroup
+          borderRadius="50%"
+          bg="#f0f2f5"
+          onClick={handleOpenSearchSuggest}
+          p={0}
+        >
           <InputLeftElement
             pointerEvents="none"
             children={<FontAwesomeIcon icon={faSearchIcon} />}
           />
           <Input
+            borderRadius="50px"
             type="tel"
             placeholder="Search"
             value={searchValue}
@@ -147,10 +166,8 @@ const SideBar = () => {
           />
         </InputGroup>
         <Center p={2}>
-          {isSearch ? (
+          {isSearch && (
             <button onClick={handleCloseSearchSuggest}>Close</button>
-          ) : (
-            <CreateChatGroupModal />
           )}
         </Center>
       </Flex>
@@ -159,7 +176,7 @@ const SideBar = () => {
       {isSearch ? (
         <>
           {searchResult.length !== 0 ? (
-            <Box maxHeight={"80%"} minHeight={"50%"} overflowY="auto">
+            <Box maxHeight={"90%"} minHeight={"50%"} overflowY="auto">
               {searchResult.map((data) => (
                 <Box
                   key={data._id}
@@ -184,7 +201,7 @@ const SideBar = () => {
           )}
         </>
       ) : (
-        <Box maxHeight={"80%"} minHeight={"50%"} overflowY="auto">
+        <Box maxHeight={"85%"} minHeight={"50%"} overflowY="auto">
           {chatsContent.map((chat) => (
             <Box
               cursor="pointer"
@@ -200,11 +217,7 @@ const SideBar = () => {
                 {chat.isGroupChat ? (
                   <AvatarGroup size="xs" max={2}>
                     {chat.users.map((user) => (
-                      <Avatar
-                        key={user._id}
-                        name={user.name}
-                        src={user.pic}
-                      />
+                      <Avatar key={user._id} name={user.name} src={user.pic} />
                     ))}
                   </AvatarGroup>
                 ) : (
@@ -231,31 +244,6 @@ const SideBar = () => {
           ))}
         </Box>
       )}
-
-      {/* Footer */}
-      <Box
-        bg="#edf2f6"
-        pos="fixed"
-        w="344px"
-        bottom={0}
-        borderTop="1px"
-        borderColor="gray.200"
-      >
-        <Flex p={2} ps="16px">
-          {user ? (
-            <UserCard
-              data={{
-                _id: user._id,
-                email: user.email,
-                name: user.name,
-                pic: user.pic,
-              }}
-              modal
-              btn
-            />
-          ) : null}
-        </Flex>
-      </Box>
     </Box>
   );
 };

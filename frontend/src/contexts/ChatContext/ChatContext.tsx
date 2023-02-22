@@ -2,6 +2,7 @@ import { Chat } from "@apis/endpoints/chats";
 import { LoginUser, User } from "@apis/endpoints/users";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Message } from "@apis/endpoints/messages/messagesApi";
 
 interface ChatContextProps {
   user?: LoginUser;
@@ -9,6 +10,8 @@ interface ChatContextProps {
   handleChangeChats: (chatsContent: Chat[]) => void;
   handleChangeSelectedChat: (selectedChat: Chat) => void;
   selectedChat?: Chat;
+  handleNotification: (data: Message[]) => void;
+  notification: Message[];
 }
 
 interface Props {
@@ -17,19 +20,26 @@ interface Props {
 
 const ChatContext = createContext<ChatContextProps>({
   chatsContent: [],
+  notification: [],
   handleChangeChats: () => {},
   handleChangeSelectedChat: () => {},
+  handleNotification: () => {},
 });
 
 export const ChatProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<LoginUser>();
   const [selectedChat, setSelectedChat] = useState<Chat>();
   const [chatsContent, setChatsContent] = useState<Chat[]>([]);
+  const [notification, setNotification] = useState<Message[]>([]);
 
   const navigate = useNavigate();
 
   const handleChangeChats = (data: Chat[]): void => {
     setChatsContent(data);
+  };
+
+  const handleNotification = (data: Message[]) => {
+    setNotification(data);
   };
 
   const handleChangeSelectedChat = (selectedChat: Chat): void => {
@@ -54,6 +64,8 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         handleChangeChats,
         selectedChat,
         handleChangeSelectedChat,
+        notification,
+        handleNotification,
       }}
     >
       {children}

@@ -7,10 +7,10 @@ const Chatspage = () => {
   const { user } = useChatContext();
 
   return (
-    <>
+    <Box>
       <Box>{user && <ChatUserList />}</Box>
       <Box>{user && <ChatContent />}</Box>
-    </>
+    </Box>
   );
 };
 
