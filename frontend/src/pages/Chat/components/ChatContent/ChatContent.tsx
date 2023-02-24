@@ -16,6 +16,8 @@ import {
   Spinner,
   FormControl,
   useToast,
+  IconButton,
+  Icon,
 } from "@chakra-ui/react";
 import { useChatContext } from "@contexts/ChatContext/useChatContext";
 
@@ -31,6 +33,7 @@ import { Chat } from "@apis/endpoints/chats";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 import Lottie from "react-lottie";
 import animationData from "../../../../animations/typing.json";
+import { ArrowBackIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 
 const ENDPOINT = "http://localhost:3005";
 var socket: Socket<DefaultEventsMap, DefaultEventsMap>,
@@ -44,10 +47,17 @@ const ChatContent = () => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
+  // console.log("Chat content", selectedChat);
+
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedChat, user, notification, handleNotification } =
-    useChatContext();
+  const {
+    selectedChat,
+    user,
+    notification,
+    handleChangeSelectedChat,
+    handleNotification,
+  } = useChatContext();
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -146,6 +156,7 @@ const ChatContent = () => {
       setTyping(true);
       socket.emit("typing", selectedChat?._id);
     }
+    
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
     setTimeout(() => {
@@ -160,7 +171,7 @@ const ChatContent = () => {
   };
 
   return (
-    <Box ps="344px" w="100%" h="100%">
+    <Box w="100%">
       {/* Header */}
       {selectedChat ? (
         <>
@@ -175,6 +186,17 @@ const ChatContent = () => {
             zIndex={99}
           >
             <Flex>
+              <Center>
+                <Icon
+                  cursor="pointer"
+                  display={{ base: "flex", md: "none" }}
+                  onClick={() => handleChangeSelectedChat()}
+                  fontSize="26px"
+                  color="gray"
+                  as={ChevronLeftIcon}
+                  me={3}
+                />
+              </Center>
               <Box onClick={onOpen}>
                 {selectedChat.isGroupChat ? (
                   <AvatarGroup size="xs" max={2}>
@@ -223,13 +245,12 @@ const ChatContent = () => {
             display="flex"
             flexDir="column"
             justifyContent="flex-end"
-            p={3}
             bg="#E8E8E8"
             w="100%"
             h="100%"
             borderRadius="lg"
             // overflowY="hidden"
-            pt="70px"
+            pt="76px"
             pb="60px"
           >
             {loading ? (
@@ -242,15 +263,12 @@ const ChatContent = () => {
               />
             ) : (
               <Box
-                style={
-                  {
-                    // display: "flex",
-                    // flexDirection: "column",
-                    // overflowY: "scroll",
-                    // scrollbarWidth: "none",
-                  }
-                }
-                mb="140px"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  overflowY: "scroll",
+                  scrollbarWidth: "none",
+                }}
               >
                 <ScrollableChat messages={messages} />
               </Box>
@@ -261,11 +279,12 @@ const ChatContent = () => {
           <Box
             pos="fixed"
             bottom={0}
-            borderTop="1px"
+            // borderTop="1px"
             borderColor="gray.200"
             w="100%"
-            bg="white"
-            overflowY="hidden"
+            // bg="transparent"
+
+            // overflowY="hidden"
           >
             <FormControl onKeyDown={sendMessage} isRequired>
               {typing ? (
@@ -274,7 +293,7 @@ const ChatContent = () => {
                     options={defaultOptions}
                     // height={50}
                     width={50}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
+                    style={{ marginBottom: "5px", marginLeft: 0 }}
                   />
                 </>
               ) : (
@@ -286,6 +305,7 @@ const ChatContent = () => {
                 p={4}
                 onChange={typingHandler}
                 value={newMessage}
+                bg="white"
               />
             </FormControl>
           </Box>

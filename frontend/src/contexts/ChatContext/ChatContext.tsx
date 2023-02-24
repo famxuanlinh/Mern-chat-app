@@ -8,7 +8,7 @@ interface ChatContextProps {
   user?: LoginUser;
   chatsContent: Chat[];
   handleChangeChats: (chatsContent: Chat[]) => void;
-  handleChangeSelectedChat: (selectedChat: Chat) => void;
+  handleChangeSelectedChat: (selectedChat?: Chat) => void;
   selectedChat?: Chat;
   handleNotification: (data: Message[]) => void;
   notification: Message[];
@@ -28,11 +28,15 @@ const ChatContext = createContext<ChatContextProps>({
 
 export const ChatProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<LoginUser>();
-  const [selectedChat, setSelectedChat] = useState<Chat>();
+  const [selectedChat, setSelectedChat] = useState<Chat | undefined>();
   const [chatsContent, setChatsContent] = useState<Chat[]>([]);
   const [notification, setNotification] = useState<Message[]>([]);
 
   const navigate = useNavigate();
+
+  const handleChangeSelectedChat = (selectedChat?: Chat): void => {
+    setSelectedChat(selectedChat);
+  };
 
   const handleChangeChats = (data: Chat[]): void => {
     setChatsContent(data);
@@ -40,10 +44,6 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
 
   const handleNotification = (data: Message[]) => {
     setNotification(data);
-  };
-
-  const handleChangeSelectedChat = (selectedChat: Chat): void => {
-    setSelectedChat(selectedChat);
   };
 
   useEffect(() => {

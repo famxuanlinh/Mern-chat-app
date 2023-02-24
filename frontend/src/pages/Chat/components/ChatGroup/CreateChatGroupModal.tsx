@@ -146,9 +146,9 @@ const CreateChatGroupModal = () => {
       <Flex alignItems="center" bg="#f5f5f5" borderRadius='50%'>
         <FontAwesomeIcon
           cursor="pointer"
+          style={{ padding: "0 10px" }}
           icon={faPropIcon}
           onClick={onOpen}
-          style={{ padding: "0 10px" }}
           fontSize="16px"
         />
       </Flex>
@@ -197,7 +197,9 @@ const CreateChatGroupModal = () => {
 
             {searchResult.length !== 0 ? <hr /> : null}
 
-            <Box maxHeight={"220px"} minHeight={"140px"} overflowY="auto">
+            <Box
+            //  maxHeight={"220px"} minHeight={"140px"} 
+             overflowY="auto">
               {searchResult.length ? (
                 searchResult.map((data) => (
                   // <Checkbox

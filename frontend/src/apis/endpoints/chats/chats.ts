@@ -1,11 +1,13 @@
 import api from "@apis/api";
 import { User } from "../users";
+import { Message } from "../messages/messagesApi";
 
 export interface Chat {
   isGroupChat: boolean;
   _id: string;
   chatName: string;
   users: User[];
+  latestMessage: Message;
 }
 
 export interface ChatGroup {

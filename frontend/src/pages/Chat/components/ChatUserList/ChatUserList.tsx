@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputLeftElement,
   Spacer,
+  Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -23,6 +24,7 @@ import { useChatContext } from "@contexts/ChatContext/useChatContext";
 import api from "@apis/api";
 import getSender from "@utils/getSender";
 import getAvatar from "@utils/getAvatar";
+import ScrollableFeed from "react-scrollable-feed";
 
 export interface SearchResult {
   _id: string;
@@ -38,8 +40,13 @@ const SideBar = () => {
   const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
   const faSearchIcon = faMagnifyingGlass as IconProp;
 
-  const { user, selectedChat, chatsContent, handleChangeChats, handleChangeSelectedChat } =
-    useChatContext();
+  const {
+    user,
+    selectedChat,
+    chatsContent,
+    handleChangeChats,
+    handleChangeSelectedChat,
+  } = useChatContext();
 
   const handleChange = (e: any): any => {
     setSearchValue(e.target.value);
@@ -119,20 +126,10 @@ const SideBar = () => {
     getSearchresult();
   }, [searchValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
+
   return (
-    <Box
-      minWidth="344px"
-      h="100%"
-      borderRight="1px"
-      pos="fixed"
-      // display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
-      // w={{ base: "100%", md: "31%" }}
-      // flexDir="column"
-      borderColor="gray.200"
-    >
-      <Box 
-      // w="344px" 
-      pt="8px">
+    <Box borderRight="1px" w="100%" borderColor="gray.200" h="100vh">
+      <Box pt="8px">
         {user ? (
           <UserCard
             data={{
@@ -176,7 +173,7 @@ const SideBar = () => {
       {isSearch ? (
         <>
           {searchResult.length !== 0 ? (
-            <Box maxHeight={"90%"} minHeight={"50%"} overflowY="auto">
+            <Box maxHeight="70%" minHeight="50%" overflowY="auto">
               {searchResult.map((data) => (
                 <Box
                   key={data._id}
@@ -201,7 +198,7 @@ const SideBar = () => {
           )}
         </>
       ) : (
-        <Box maxHeight={"85%"} minHeight={"50%"} overflowY="auto">
+        <Box maxHeight="80%" minHeight="50%" overflowY="auto">
           {chatsContent.map((chat) => (
             <Box
               cursor="pointer"
@@ -236,8 +233,9 @@ const SideBar = () => {
                       ? getSender(chat.users, user)
                       : chat.chatName}
                   </Text>
-                  <Text>{chat.chatName}</Text>
-                  {/* <p>{chat.users[0].name}</p> */}
+                  
+                  {/* <Text>{chat.latestMessage?.content}</Text> */}
+                  <Text>{chat.latestMessage?.sender._id === user?._id ? "You" : chat.latestMessage?.sender.name} {chat.latestMessage?.sender ? ":" : ""}  {chat.latestMessage?.content}</Text>
                 </Box>
               </Flex>
             </Box>
